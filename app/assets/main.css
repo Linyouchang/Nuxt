@@ -1,0 +1,319 @@
+/* ==========================================================
+   林祐菖 - 個人介紹網頁樣式 (main.css)
+   設計風格：富嶽三十六景 · 神奈川沖浪裏 (The Great Wave off Kanagawa)
+   色彩靈感：葛飾北齋「北齋藍 (普魯士藍)」、碎浪白沫、青海波、赤富士朱丹、金泥古和紙
+   ========================================================== */
+
+/* 全域重設與基礎排版 */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* 神奈川沖浪裏 · 浮世繪經典配色變數 */
+  --bg-page: #f4eee2;              /* 富士遠山和紙色 (溫潤米黃古紙底色) */
+  --bg-card: #fdfaf3;              /* 木版年輪版畫畫紙色 */
+  --bg-tag: #e3edf5;               /* 水色薄藍短冊色 */
+  --color-primary-dark: #0a1b33;   /* 濃紺 / 巨浪深淵藍 */
+  --color-primary: #12335c;        /* 葛飾北齋「北齋藍」/ 普魯士藍 (主色調) */
+  --color-primary-light: #245283;  /* 潮汐青藍 / 浪濤漸層 */
+  --color-wave-pale: #98bfdb;      /* 水色 / 薄藍水霧 */
+  --color-wave-foam: #f8fbfe;      /* 白波 / 卷浪飛沫白 */
+  --color-accent: #c03622;         /* 旭日赤富士朱丹色 (落款朱印醒目色) */
+  --color-gold: #c59336;           /* 江戶金泥 / 黃唐茶 (版畫古典裝飾金) */
+  --color-text-main: #1c232d;      /* 濃墨色 (版畫木刻墨印字色) */
+  --color-text-muted: #536070;     /* 藍茶墨色 (次要文字) */
+  --color-border: #d5cbba;         /* 江戶和紙邊界線 */
+  --color-border-wave: #9dbbd4;    /* 浪花細墨線 */
+  --color-ink-line: #0a1522;       /* 木刻雕版外框深黑墨線 */
+  --font-family-serif: "Songti TC", "Noto Serif TC", "Yu Mincho", "Hiragino Mincho ProN", serif;
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
+                      "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  --transition-smooth: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  background-color: var(--bg-page);
+  /* 使用青海波 (Seigaiha) 傳統浮世繪幾何波紋底紋 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24' viewBox='0 0 48 24'%3E%3Cpath fill='none' stroke='%23d9cfbd' stroke-width='1.2' d='M0 24 A24 24 0 0 1 48 24 M6 24 A18 18 0 0 1 42 24 M12 24 A12 12 0 0 1 36 24 M18 24 A6 6 0 0 1 30 24 M-24 12 A24 24 0 0 1 24 12 M-18 12 A18 18 0 0 1 18 12 M-12 12 A12 12 0 0 1 12 12 M-6 12 A6 6 0 0 1 6 12 M24 12 A24 24 0 0 1 72 12 M30 12 A18 18 0 0 1 66 12 M36 12 A12 12 0 0 1 60 12 M42 12 A6 6 0 0 1 54 12'/%3E%3C/svg%3E");
+  background-size: 48px 24px;
+  color: var(--color-text-main);
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  line-height: 1.85;
+  letter-spacing: 0.04em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 44px 18px;
+  min-height: 100vh;
+}
+
+/* 主版面容器 (江戶版畫大判裝裱風格，四重邊框層次) */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: rgba(253, 250, 243, 0.96);
+  border: 4px solid var(--color-primary-dark);
+  border-radius: 4px;
+  box-shadow: 
+    0 0 0 4px var(--bg-page),
+    0 0 0 7px var(--color-gold),
+    0 0 0 10px var(--color-primary),
+    0 16px 36px rgba(10, 27, 51, 0.18);
+  padding: 32px 30px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 頂部神奈川沖浪裏漸層飾帶 */
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, 
+    var(--color-primary-dark) 0%, 
+    var(--color-primary) 35%, 
+    var(--color-wave-pale) 50%, 
+    var(--color-primary) 65%, 
+    var(--color-accent) 100%
+  );
+}
+
+/* 全部收起/展開 控制列 */
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 5px 13px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.toolbar-btn:hover:not(:disabled) {
+  background-color: var(--color-primary);
+  color: #fffaf0;
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 6px rgba(18, 51, 92, 0.18);
+  transform: translateY(-1px);
+}
+
+.toolbar-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: #d8cebd;
+}
+
+.toolbar-icon {
+  font-size: 0.88rem;
+  font-weight: bold;
+}
+
+/* 主內容區塊 (Main & Sections) */
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section {
+  background-color: var(--bg-card);
+  border: 1px solid var(--color-border);
+  border-top: 3.5px solid var(--color-primary);
+  border-radius: 4px;
+  padding: 24px 24px;
+  box-shadow: 0 4px 12px rgba(10, 27, 51, 0.05);
+  position: relative;
+  transition: var(--transition-smooth);
+}
+
+.section:hover {
+  box-shadow: 0 6px 18px rgba(10, 27, 51, 0.08);
+  border-color: #c9bea8;
+}
+
+/* 區塊標題：浮世繪「題簽 / 短冊」樣式與收合按鈕 */
+.section-header {
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: var(--transition-smooth);
+}
+
+.section-header:hover .section-title {
+  color: var(--color-primary-light);
+}
+
+.section-header:hover .toggle-btn {
+  border-color: var(--color-primary);
+  background-color: #d9e7f2;
+}
+
+.section-header.is-collapsed {
+  margin-bottom: 0;
+  border-bottom-color: transparent;
+  padding-bottom: 0;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-gold);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.sub-label::before {
+  content: "〰";
+  font-size: 0.75rem;
+  color: var(--color-primary-light);
+}
+
+.section-title {
+  font-family: var(--font-family-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  letter-spacing: 0.08em;
+  position: relative;
+  padding-left: 14px;
+  border-left: 5px solid var(--color-primary);
+  transition: color 0.2s ease;
+}
+
+/* 標題題簽赤富士朱丹頂標 */
+.section-title::after {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 0;
+  width: 5px;
+  height: 40%;
+  background-color: var(--color-accent);
+}
+
+/* 收起/展開 按鈕 */
+.toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-tag);
+  border: 1px solid var(--color-border-wave);
+  color: var(--color-primary);
+  font-family: var(--font-family-base);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  flex-shrink: 0;
+}
+
+.toggle-btn:hover {
+  background: var(--color-primary) !important;
+  color: #fffaf0 !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 2px 6px rgba(18, 51, 92, 0.2);
+}
+
+.toggle-icon {
+  font-size: 0.65rem;
+  line-height: 1;
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-icon.is-collapsed {
+  transform: rotate(-90deg);
+}
+
+/* 平滑收合動畫容器 (CSS Grid 0fr <-> 1fr 技術) */
+.collapse-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.26s ease;
+  opacity: 0;
+}
+
+.collapse-wrapper.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.collapse-inner {
+  overflow: hidden;
+}
+
+/* 響應式設計 (針對行動端 ~375px 與小螢幕優化) */
+@media (max-width: 600px) {
+  body {
+    padding: 16px 10px;
+    background-size: 36px 18px;
+  }
+
+  .container {
+    padding: 20px 14px;
+    border-width: 3px;
+    box-shadow: 
+      0 0 0 2px var(--bg-page),
+      0 0 0 5px var(--color-gold),
+      0 0 0 7px var(--color-primary),
+      0 8px 20px rgba(10, 27, 51, 0.15);
+  }
+
+  .section {
+    padding: 16px 14px;
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+  }
+
+  .toggle-btn {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+
+  .toolbar {
+    margin-bottom: 14px;
+  }
+
+  .toolbar-btn {
+    font-size: 0.76rem;
+    padding: 4px 9px;
+  }
+}
+

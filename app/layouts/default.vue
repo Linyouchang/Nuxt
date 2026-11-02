@@ -1,84 +1,94 @@
+<script setup>
+import { profileData } from '~/data/profileData'
+</script>
+
 <template>
-  <div class="layout">
-    <header class="navbar">
-      <div class="brand">林祐菖的個人網站</div>
-      <nav class="nav-links">
+  <div class="container">
+    <!-- 站內三頁導覽列 -->
+    <header class="site-navbar">
+      <div class="site-brand">{{ profileData.header.name }}的個人網站</div>
+      <nav class="site-nav-links" aria-label="主要導覽">
         <NuxtLink to="/">首頁</NuxtLink>
         <NuxtLink to="/about">關於我</NuxtLink>
         <NuxtLink to="/projects">作品</NuxtLink>
       </nav>
     </header>
 
-    <main class="container">
+    <!-- 頁面內容插槽 -->
+    <main class="profile-main">
       <slot />
     </main>
 
-    <footer class="footer">
-      <p>© 2026 林祐菖 · Nuxt 4 練習網站</p>
+    <!-- 原作品頁尾 (原 ProfileFooter) -->
+    <footer class="profile-footer">
+      <WaveDivider />
+      <p class="copyright">{{ profileData.footer.copyright }}</p>
     </footer>
   </div>
 </template>
 
 <style scoped>
-.layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
-  color: #1f2937;
-  background-color: #f9fafb;
-}
-
-.navbar {
+.site-navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--color-border);
 }
 
-.brand {
+.site-brand {
+  font-family: var(--font-family-serif);
   font-weight: 700;
   font-size: 1.15rem;
-  color: #111827;
+  color: var(--color-primary-dark);
+  letter-spacing: 0.08em;
 }
 
-.nav-links {
+.site-nav-links {
   display: flex;
-  gap: 1.25rem;
+  gap: 10px;
 }
 
-.nav-links a {
+.site-nav-links a {
   text-decoration: none;
-  color: #4b5563;
-  font-weight: 500;
-  padding: 0.35rem 0.75rem;
-  border-radius: 0.375rem;
-}
-
-.nav-links a.router-link-active {
-  color: #2563eb;
-  background-color: #dbeafe;
+  color: var(--color-primary);
+  background-color: var(--bg-card);
+  border: 1px solid var(--color-border);
   font-weight: 600;
+  font-size: 0.9rem;
+  padding: 5px 14px;
+  border-radius: 4px;
+  transition: var(--transition-smooth);
 }
 
-.container {
-  flex: 1;
-  max-width: 800px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-  box-sizing: border-box;
+.site-nav-links a:hover {
+  border-color: var(--color-primary);
+  background-color: var(--bg-tag);
 }
 
-.footer {
+.site-nav-links a.router-link-active {
+  background-color: var(--color-primary);
+  color: #fffaf0;
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 6px rgba(18, 51, 92, 0.2);
+}
+
+.profile-footer {
   text-align: center;
-  padding: 1rem;
-  font-size: 0.875rem;
-  color: #6b7280;
-  border-top: 1px solid #e5e7eb;
-  background-color: #ffffff;
+  padding: 32px 10px 12px;
+}
+
+.profile-footer :deep(.divider) {
+  margin-bottom: 20px;
+}
+
+.copyright {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
 }
 </style>
-

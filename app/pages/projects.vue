@@ -1,108 +1,239 @@
 <script setup>
-const projects = ref([
-  {
-    title: '練習一：Vue 3 元件與資料綁定個人名片',
-    status: '已完成（上一單元）',
-    description: '使用 Vue 3 的 ref 與模板語法，實作個人資訊與清單的動態資料綁定。',
-    tags: ['Vue 3', '資料綁定', '元件基礎']
-  },
-  {
-    title: '練習二：Nuxt 4 三頁式個人網站與導覽列',
-    status: '進行中',
-    description: '將個人介紹拆分為「首頁、關於我、作品」三個獨立頁面，練習 Nuxt 4 檔案路由與共用版面。',
-    tags: ['Nuxt 4', 'Pages 路由', 'Layouts 版型']
-  }
-])
+import { profileData } from '~/data/profileData'
+
+const data = profileData.projects
+const isOpen = ref(true)
+
+// 搜尋關鍵字狀態 (保留自原 ProjectsSection.vue)
+const keyword = ref('')
+
+// 依關鍵字篩選作品清單（比對名稱、說明或網址）
+const filteredProjects = computed(() => {
+  const query = keyword.value.trim().toLowerCase()
+  const items = data.items || []
+  if (!query) return items
+
+  return items.filter(item => {
+    const matchTitle = item.title?.toLowerCase().includes(query)
+    const matchDesc = item.desc?.toLowerCase().includes(query)
+    const matchUrl = item.url?.toLowerCase().includes(query)
+    return Boolean(matchTitle || matchDesc || matchUrl)
+  })
+})
+
+// 清空搜尋條件
+function clearSearch() {
+  keyword.value = ''
+}
+
+// 切換收起/展開
+function toggle() {
+  isOpen.value = !isOpen.value
+}
 </script>
 
 <template>
-  <div class="projects-page">
-    <h1>作品</h1>
-    <p class="subtitle">這裡整理了我目前完成的兩項前端練習成果：</p>
-
-    <div class="projects-grid">
-      <article v-for="project in projects" :key="project.title" class="project-card">
-        <div class="card-header">
-          <h2>{{ project.title }}</h2>
-          <span class="badge">{{ project.status }}</span>
-        </div>
-        <p class="description">{{ project.description }}</p>
-        <div class="tags">
-          <span v-for="tag in project.tags" :key="tag" class="tag">
-            {{ tag }}
-          </span>
-        </div>
-      </article>
+  <section class="section projects-section" aria-labelledby="projects-heading">
+    <!-- 區塊標題與收合按鈕 -->
+    <div
+      class="section-header"
+      :class="{ 'is-collapsed': !isOpen }"
+      @click="toggle"
+      role="button"
+      tabindex="0"
+      @keydown.enter.space.prevent="toggle"
+      :aria-expanded="isOpen"
+    >
+      <div class="header-titles">
+        <span class="sub-label">{{ data.label }}</span>
+        <h1 id="projects-heading" class="section-title">{{ data.title }}</h1>
+      </div>
+      <button
+        type="button"
+        class="toggle-btn"
+        :aria-label="isOpen ? '收起作品介紹' : '展開作品介紹'"
+        @click.stop="toggle"
+      >
+        <span class="toggle-text">{{ isOpen ? '收起' : '展開' }}</span>
+        <span class="toggle-icon" :class="{ 'is-collapsed': !isOpen }">▼</span>
+      </button>
     </div>
-  </div>
+
+    <!-- 內容折疊容器 -->
+    <div class="collapse-wrapper" :class="{ 'is-open': isOpen }">
+      <div class="collapse-inner">
+        <div class="section-content">
+          <!-- 搜尋與結果數量列 -->
+          <div class="projects-controls">
+            <div class="search-box">
+              <input
+                v-model="keyword"
+                type="search"
+                class="search-input"
+                placeholder="搜尋作品名稱或關鍵字..."
+                aria-label="搜尋作品"
+              />
+              <button
+                v-if="keyword"
+                type="button"
+                class="clear-btn"
+                @click="clearSearch"
+                aria-label="清空搜尋"
+                title="清空搜尋"
+              >
+                ✕
+              </button>
+            </div>
+            <span class="result-count">
+              共 {{ filteredProjects.length }} 件作品
+            </span>
+          </div>
+
+          <!-- 無符合搜尋結果提示 -->
+          <div v-if="filteredProjects.length === 0" class="no-result">
+            <p class="no-result-text">查無符合「{{ keyword }}」的作品</p>
+            <button type="button" class="reset-search-btn" @click="clearSearch">
+              清空搜尋條件
+            </button>
+          </div>
+
+          <!-- 作品卡片清單網格 -->
+          <div v-else class="projects-grid">
+            <ProjectCard
+              v-for="project in filteredProjects"
+              :key="project.id"
+              :project="project"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <style scoped>
-.projects-page h1 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
+.section-content {
+  padding-top: 2px;
 }
 
-.subtitle {
-  color: #6b7280;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
+/* 搜尋列與計數樣式 */
+.projects-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 220px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 7px 32px 7px 12px;
+  font-size: 0.88rem;
+  font-family: var(--font-family-base);
+  background: #fffdf9;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-main);
+  transition: var(--transition-smooth);
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(18, 51, 92, 0.12);
+}
+
+.clear-btn {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 50%;
+  transition: var(--transition-smooth);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-btn:hover {
+  color: var(--color-accent);
+  background-color: rgba(192, 54, 34, 0.1);
+}
+
+.result-count {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* 查無結果提示 */
+.no-result {
+  text-align: center;
+  padding: 32px 16px;
+  background: rgba(244, 238, 226, 0.5);
+  border: 1px dashed var(--color-border);
+  border-radius: 4px;
+}
+
+.no-result-text {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+
+.reset-search-btn {
+  background: var(--color-primary);
+  color: #fffaf0;
+  border: 1px solid var(--color-primary);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.reset-search-btn:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-light);
+  box-shadow: 0 2px 8px rgba(18, 51, 92, 0.2);
+}
+
+/* 作品列表網格排列 */
 .projects-grid {
   display: grid;
-  gap: 1.25rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
 }
 
-.project-card {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
+@media (max-width: 600px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.75rem;
-}
+  .projects-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-.card-header h2 {
-  margin: 0;
-  font-size: 1.15rem;
-  color: #111827;
-}
-
-.badge {
-  font-size: 0.8rem;
-  background-color: #f3f4f6;
-  color: #374151;
-  padding: 0.25rem 0.65rem;
-  border-radius: 999px;
-  font-weight: 500;
-}
-
-.description {
-  color: #4b5563;
-  line-height: 1.6;
-  margin: 0 0 1rem;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tag {
-  font-size: 0.8rem;
-  background-color: #eff6ff;
-  color: #1d4ed8;
-  padding: 0.25rem 0.65rem;
-  border-radius: 0.375rem;
+  .search-box {
+    min-width: 100%;
+  }
 }
 </style>
